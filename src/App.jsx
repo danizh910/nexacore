@@ -81,30 +81,33 @@ export default function App() {
   useEffect(() => {
     const ctx = gsap.context(() => {
 
-      // track hero scroll → 3D
+      // Pin the hero and use 200% extra scroll space for the full animation
       ScrollTrigger.create({
         trigger: heroRef.current,
         start: 'top top',
-        end: 'bottom top',
+        end: '+=200%',
+        pin: true,
         scrub: 1.5,
         onUpdate: self => { sp.current = self.progress },
       })
 
-      // canvas drift + fade
+      // canvas drift + fade — tied to same scroll range
       gsap.to(canvasRef.current, {
         scrollTrigger: {
           trigger: heroRef.current,
-          start: 'top top', end: 'bottom top',
+          start: 'top top',
+          end: '+=200%',
           scrub: 1.2,
         },
-        x: '6%', scale: 0.82, opacity: 0,
+        x: '5%', scale: 0.85, opacity: 0,
       })
 
-      // hero text parallax
+      // hero text parallax — fade out in first half of the scroll range
       gsap.to(textRef.current, {
         scrollTrigger: {
           trigger: heroRef.current,
-          start: 'top top', end: '50% top',
+          start: 'top top',
+          end: '+=100%',
           scrub: true,
         },
         y: -55, opacity: 0,
