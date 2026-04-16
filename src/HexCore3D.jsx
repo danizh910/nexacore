@@ -229,19 +229,30 @@ function HexScene({ sp, scrollVel }) {
   const { camera } = useThree()
 
   useEffect(() => {
-    camera.position.set(0, 1.2, 5.5)
+    camera.position.set(0, 0.6, 7.0)
     camera.lookAt(0, 0, 0)
   }, [camera])
 
   useFrame(() => {
-    // Accumulate rotation from scroll velocity (direction = scroll direction)
+    const t = sp.current
+
+    // Dramatic camera zoom: pull in to 50%, then pull back to 100%
+    const targetZ = t < 0.5
+      ? 7.0 - (t / 0.5) * 2.8   // 7.0 → 4.2  (zoom in, object feels HUGE)
+      : 4.2 + ((t - 0.5) / 0.5) * 4.3  // 4.2 → 8.5  (pull back, reveal explosion)
+    camera.position.z += (targetZ - camera.position.z) * 0.05
+
+    // Slight vertical drift with scroll
+    const targetY = 0.6 - t * 0.5
+    camera.position.y += (targetY - camera.position.y) * 0.05
+    camera.lookAt(0, 0, 0)
+
+    // Scroll-driven rotation with damping
     idleRot.current += scrollVel.current
-    // Smooth deceleration after scrolling stops
     scrollVel.current *= 0.88
 
     if (!groupRef.current) return
-    groupRef.current.scale.setScalar(1 + sp.current * 0.32)
-    groupRef.current.rotation.x = sp.current * 0.1
+    groupRef.current.rotation.x = t * 0.12
     groupRef.current.rotation.y = idleRot.current
   })
 
@@ -263,7 +274,7 @@ function HexScene({ sp, scrollVel }) {
 export default function HexCore3D({ scrollProgress, scrollVelocity }) {
   return (
     <Canvas
-      camera={{ position: [0, 1.2, 5.5], fov: 45 }}
+      camera={{ position: [0, 0.6, 7.0], fov: 50 }}
       gl={{
         antialias: true,
         alpha: true,
@@ -284,9 +295,9 @@ export default function HexCore3D({ scrollProgress, scrollVelocity }) {
 
         <EffectComposer>
           <Bloom
-            intensity={1.8}
-            luminanceThreshold={0.1}
-            luminanceSmoothing={0.85}
+            intensity={2.4}
+            luminanceThreshold={0.08}
+            luminanceSmoothing={0.9}
             mipmapBlur
           />
         </EffectComposer>

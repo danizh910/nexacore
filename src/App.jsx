@@ -54,6 +54,7 @@ export default function App() {
   const heroRef   = useRef()
   const canvasRef = useRef()
   const textRef   = useRef()
+  const badgeRef  = useRef()
   const svcRef    = useRef()
   const whyRef    = useRef()
 
@@ -81,39 +82,39 @@ export default function App() {
   useEffect(() => {
     const ctx = gsap.context(() => {
 
-      // Pin the hero and use 200% extra scroll space for the full animation
+      // Pin hero — 250% extra scroll = full animation visible before moving on
       ScrollTrigger.create({
         trigger: heroRef.current,
         start: 'top top',
-        end: '+=200%',
+        end: '+=250%',
         pin: true,
         scrub: 1.5,
         onUpdate: self => { sp.current = self.progress },
       })
 
-      // canvas drift + fade — tied to same scroll range
-      gsap.to(canvasRef.current, {
+      // Badge fades out in first 25% of scroll
+      gsap.to(badgeRef.current, {
         scrollTrigger: {
           trigger: heroRef.current,
           start: 'top top',
-          end: '+=200%',
-          scrub: 1.2,
+          end: '+=62%',
+          scrub: true,
         },
-        x: '5%', scale: 0.85, opacity: 0,
+        y: -28, opacity: 0,
       })
 
-      // hero text parallax — fade out in first half of the scroll range
+      // Hero text fades out in first 50%
       gsap.to(textRef.current, {
         scrollTrigger: {
           trigger: heroRef.current,
           start: 'top top',
-          end: '+=100%',
+          end: '+=125%',
           scrub: true,
         },
-        y: -55, opacity: 0,
+        y: -60, opacity: 0,
       })
 
-      // service cards stagger
+      // Service cards stagger
       const cards = svcRef.current?.querySelectorAll('[data-card]')
       if (cards?.length) {
         gsap.fromTo(cards,
@@ -125,7 +126,7 @@ export default function App() {
         )
       }
 
-      // why points slide
+      // Why points slide
       const pts = whyRef.current?.querySelectorAll('[data-why]')
       if (pts?.length) {
         gsap.fromTo(pts,
@@ -154,22 +155,34 @@ export default function App() {
           <div className={s.orb2} />
         </div>
 
-        <div className={s.heroText} ref={textRef}>
+        {/* Full-screen 3D canvas */}
+        <div className={s.canvas} ref={canvasRef}>
+          <Suspense fallback={<div className={s.canvasFb} />}>
+            <HexCore3D scrollProgress={sp} scrollVelocity={scrollVel} />
+          </Suspense>
+        </div>
+
+        {/* Gradient overlay — makes text readable over 3D */}
+        <div className={s.heroOverlay} />
+
+        {/* Badge — top center */}
+        <div className={s.heroTop} ref={badgeRef}>
           <div className={s.badge}>
             <span className={s.dot} />
             IT-Agentur · DACH-Region · DSGVO-konform
           </div>
+        </div>
 
+        {/* Text — bottom center */}
+        <div className={s.heroText} ref={textRef}>
           <h1>
-            Ihr digitaler<br />
-            Vorsprung<br />
+            Ihr digitaler Vorsprung<br />
             <span className={s.cyan}>beginnt hier.</span>
           </h1>
 
           <p className={s.heroSub}>
             Wir entwickeln leistungsstarke Websites, smarte Automatisierungen
             und KI-Chatbots — maßgeschneidert für KMUs in der DACH-Region.
-            Echter IT-Hintergrund, keine Agentur-Luftschlösser.
           </p>
 
           <div className={s.btns}>
@@ -197,12 +210,6 @@ export default function App() {
               <span className={s.statL}>Web · Auto · KI</span>
             </div>
           </div>
-        </div>
-
-        <div className={s.canvas} ref={canvasRef}>
-          <Suspense fallback={<div className={s.canvasFb} />}>
-            <HexCore3D scrollProgress={sp} scrollVelocity={scrollVel} />
-          </Suspense>
         </div>
 
         <div className={s.scrollHint}>
