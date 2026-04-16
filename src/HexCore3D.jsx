@@ -223,7 +223,7 @@ function Particles() {
 }
 
 /* ── Main scene group ──────────────────────────────────── */
-function HexScene({ sp }) {
+function HexScene({ sp, scrollVel }) {
   const groupRef = useRef()
   const idleRot = useRef(0)
   const { camera } = useThree()
@@ -233,8 +233,12 @@ function HexScene({ sp }) {
     camera.lookAt(0, 0, 0)
   }, [camera])
 
-  useFrame(({ clock }) => {
-    idleRot.current = clock.getElapsedTime() * 0.22
+  useFrame(() => {
+    // Accumulate rotation from scroll velocity (direction = scroll direction)
+    idleRot.current += scrollVel.current
+    // Smooth deceleration after scrolling stops
+    scrollVel.current *= 0.88
+
     if (!groupRef.current) return
     groupRef.current.scale.setScalar(1 + sp.current * 0.32)
     groupRef.current.rotation.x = sp.current * 0.1
@@ -256,7 +260,7 @@ function HexScene({ sp }) {
 }
 
 /* ── Canvas ────────────────────────────────────────────── */
-export default function HexCore3D({ scrollProgress }) {
+export default function HexCore3D({ scrollProgress, scrollVelocity }) {
   return (
     <Canvas
       camera={{ position: [0, 1.2, 5.5], fov: 45 }}
@@ -274,7 +278,7 @@ export default function HexCore3D({ scrollProgress }) {
         <pointLight position={[-3, -2, -3]} color="#8A2BE2" intensity={2.5} />
         <pointLight position={[0, 5, 1]} color="#ffffff" intensity={0.5} />
 
-        <HexScene sp={scrollProgress} />
+        <HexScene sp={scrollProgress} scrollVel={scrollVelocity} />
 
         <Environment preset="night" />
 

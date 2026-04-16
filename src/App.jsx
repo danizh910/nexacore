@@ -50,11 +50,19 @@ function Step({ num, title, desc }) {
 /* ── App ──────────────────────────────────────────────── */
 export default function App() {
   const sp        = useRef(0)
+  const scrollVel = useRef(0)
   const heroRef   = useRef()
   const canvasRef = useRef()
   const textRef   = useRef()
   const svcRef    = useRef()
   const whyRef    = useRef()
+
+  /* Track scroll velocity for 3D rotation */
+  useEffect(() => {
+    const onWheel = e => { scrollVel.current += e.deltaY * 0.0009 }
+    window.addEventListener('wheel', onWheel, { passive: true })
+    return () => window.removeEventListener('wheel', onWheel)
+  }, [])
 
   /* Lenis smooth scroll */
   useEffect(() => {
@@ -190,7 +198,7 @@ export default function App() {
 
         <div className={s.canvas} ref={canvasRef}>
           <Suspense fallback={<div className={s.canvasFb} />}>
-            <HexCore3D scrollProgress={sp} />
+            <HexCore3D scrollProgress={sp} scrollVelocity={scrollVel} />
           </Suspense>
         </div>
 
