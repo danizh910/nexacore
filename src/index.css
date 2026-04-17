@@ -43,17 +43,18 @@ h1, h2, h3, h4, h5 { font-family: var(--fh); line-height: 1.1; }
 }
 
 .btn-primary {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--cyan); color: var(--navy);
-  padding: 13px 28px; border-radius: 6px; border: none;
-  font-family: var(--fh); font-weight: 700; font-size: 13px;
-  cursor: pointer; transition: all 0.25s; letter-spacing: 0.04em;
-  text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--cyan); color: #040810;
+  padding: 15px 34px; border-radius: 8px; border: none;
+  font-family: var(--fh); font-weight: 800; font-size: 13px;
+  cursor: pointer; letter-spacing: 0.05em; text-transform: uppercase;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 0 28px rgba(0,242,255,0.25), 0 4px 16px rgba(0,0,0,0.4);
 }
 .btn-primary:hover {
-  background: #33f5ff;
-  transform: translateY(-2px);
-  box-shadow: 0 0 24px rgba(0,242,255,0.3);
+  background: #4DFBFF;
+  transform: translateY(-3px);
+  box-shadow: 0 0 48px rgba(0,242,255,0.45), 0 8px 32px rgba(0,0,0,0.5);
 }
 
 .btn-ghost {

@@ -229,8 +229,9 @@ function HexScene({ sp, scrollVel }) {
   const { camera } = useThree()
 
   useEffect(() => {
-    camera.position.set(0, 0.6, 7.0)
-    camera.lookAt(0, 0, 0)
+    // Camera starts below-center → object appears in upper half of screen
+    camera.position.set(0, -0.8, 7.5)
+    camera.lookAt(0, 0.4, 0)
   }, [camera])
 
   useFrame(() => {
@@ -238,14 +239,14 @@ function HexScene({ sp, scrollVel }) {
 
     // Dramatic camera zoom: pull in to 50%, then pull back to 100%
     const targetZ = t < 0.5
-      ? 7.0 - (t / 0.5) * 2.8   // 7.0 → 4.2  (zoom in, object feels HUGE)
-      : 4.2 + ((t - 0.5) / 0.5) * 4.3  // 4.2 → 8.5  (pull back, reveal explosion)
+      ? 7.5 - (t / 0.5) * 3.2   // 7.5 → 4.3  (zoom in — object feels MASSIVE)
+      : 4.3 + ((t - 0.5) / 0.5) * 4.7  // 4.3 → 9.0  (pull back — full explosion visible)
     camera.position.z += (targetZ - camera.position.z) * 0.05
 
-    // Slight vertical drift with scroll
-    const targetY = 0.6 - t * 0.5
+    // Camera rises slightly as we scroll (creates an "ascent" feel)
+    const targetY = -0.8 + t * 1.2
     camera.position.y += (targetY - camera.position.y) * 0.05
-    camera.lookAt(0, 0, 0)
+    camera.lookAt(0, 0.4, 0)
 
     // Scroll-driven rotation with damping
     idleRot.current += scrollVel.current
@@ -257,7 +258,7 @@ function HexScene({ sp, scrollVel }) {
   })
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} scale={1.5}>
       <OuterRing sp={sp} idleRot={idleRot} />
       <OuterRing2 sp={sp} idleRot={idleRot} />
       {Array.from({ length: 6 }, (_, i) => (
@@ -274,7 +275,7 @@ function HexScene({ sp, scrollVel }) {
 export default function HexCore3D({ scrollProgress, scrollVelocity }) {
   return (
     <Canvas
-      camera={{ position: [0, 0.6, 7.0], fov: 50 }}
+      camera={{ position: [0, -0.8, 7.5], fov: 52 }}
       gl={{
         antialias: true,
         alpha: true,
@@ -284,10 +285,11 @@ export default function HexCore3D({ scrollProgress, scrollVelocity }) {
       style={{ background: 'transparent' }}
     >
       <Suspense fallback={null}>
-        <ambientLight intensity={0.07} />
-        <pointLight position={[3, 3, 3]} color="#00F2FF" intensity={4} />
-        <pointLight position={[-3, -2, -3]} color="#8A2BE2" intensity={2.5} />
-        <pointLight position={[0, 5, 1]} color="#ffffff" intensity={0.5} />
+        <ambientLight intensity={0.04} />
+        <pointLight position={[4, 4, 4]} color="#00F2FF" intensity={6} />
+        <pointLight position={[-4, -3, -4]} color="#8A2BE2" intensity={4} />
+        <pointLight position={[0, 6, 2]} color="#ffffff" intensity={0.6} />
+        <pointLight position={[0, -5, 0]} color="#00F2FF" intensity={1.5} />
 
         <HexScene sp={scrollProgress} scrollVel={scrollVelocity} />
 

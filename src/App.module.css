@@ -37,8 +37,13 @@
 .heroOverlay {
   position: absolute; inset: 0; z-index: 2; pointer-events: none;
   background:
-    radial-gradient(ellipse 100% 50% at 50% 100%, rgba(10,15,30,0.98) 0%, rgba(10,15,30,0.7) 40%, transparent 70%),
-    radial-gradient(ellipse 60% 30% at 50% 0%, rgba(10,15,30,0.6) 0%, transparent 70%);
+    linear-gradient(to top,
+      rgba(8,12,24,1) 0%,
+      rgba(8,12,24,0.85) 18%,
+      rgba(8,12,24,0.3) 40%,
+      transparent 65%
+    ),
+    radial-gradient(ellipse 60% 25% at 50% 0%, rgba(8,12,24,0.55) 0%, transparent 100%);
 }
 
 /* Badge — top center */
@@ -53,7 +58,8 @@
   z-index: 4;
   display: flex; flex-direction: column; align-items: center;
   text-align: center;
-  padding: 0 2rem 5.5vh;
+  padding: 0 2rem 6vh;
+  gap: 0;
 }
 
 .badge {
@@ -74,27 +80,24 @@
 }
 
 .heroText h1 {
-  font-size: clamp(2.6rem, 5vw, 4.8rem);
-  font-weight: 900; letter-spacing: -0.03em; margin-bottom: 1.2rem; line-height: 1.1;
+  font-size: clamp(3.2rem, 7vw, 6.5rem);
+  font-weight: 900; letter-spacing: -0.04em;
+  line-height: 0.95; margin-bottom: 1.5rem;
 }
 .heroSub {
-  font-size: 1rem; color: #8492A6; line-height: 1.75;
-  margin-bottom: 2rem; max-width: 520px;
+  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+  color: #7A8BA0; line-height: 1.7;
+  margin-bottom: 2.2rem; max-width: 480px;
 }
-.btns { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.5rem; justify-content: center; }
 
-.stats {
-  display: flex; align-items: center;
-  border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.75rem;
+/* Single inline stats row — minimal, understated */
+.statsInline {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-top: 2rem;
+  font-size: 11px; color: #4A5A6B;
+  letter-spacing: 0.06em; text-transform: uppercase;
 }
-.stat { flex: 1; text-align: center; }
-.statN {
-  display: block; font-family: 'Montserrat', sans-serif;
-  font-weight: 700; font-size: 1.8rem; color: #00F2FF;
-  line-height: 1; margin-bottom: 4px;
-}
-.statL { display: block; font-size: 11px; color: #64748B; letter-spacing: 0.04em; text-transform: uppercase; }
-.statD { width: 1px; height: 40px; background: rgba(255,255,255,0.08); margin: 0 2.5rem; flex-shrink: 0; }
+.sDiv { color: #2A3A4B; }
 
 .canvas {
   position: absolute; inset: 0;
@@ -261,9 +264,10 @@
   .contactGrid { grid-template-columns: 1fr; gap: 3rem; }
 }
 @media (max-width: 768px) {
-  .heroText h1 { font-size: 2.2rem; }
+  .heroText h1 { font-size: 2.8rem; letter-spacing: -0.03em; }
   .heroSub { max-width: 100%; font-size: 0.9rem; }
   .heroTop { top: 4.5rem; }
+  .statsInline { flex-wrap: wrap; justify-content: center; }
   .stats { gap: 0; }
   .statD { margin: 0 1rem; }
   .statN { font-size: 1.4rem; }

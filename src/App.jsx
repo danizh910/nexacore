@@ -176,45 +176,26 @@ export default function App() {
         {/* Text — bottom center */}
         <div className={s.heroText} ref={textRef}>
           <h1>
-            Ihr digitaler Vorsprung<br />
-            <span className={s.cyan}>beginnt hier.</span>
+            Ihr digitaler<br />
+            <span className={s.cyan}>Vorsprung.</span>
           </h1>
 
           <p className={s.heroSub}>
-            Wir entwickeln leistungsstarke Websites, smarte Automatisierungen
-            und KI-Chatbots — maßgeschneidert für KMUs in der DACH-Region.
+            Websites · KI-Chatbots · Automatisierung —<br />
+            maßgeschneidert für den DACH-Mittelstand.
           </p>
 
-          <div className={s.btns}>
-            <button className="btn-primary" onClick={() => go('kontakt')}>
-              Kostenloses Erstgespräch
-            </button>
-            <button className="btn-ghost" onClick={() => go('services')}>
-              Unsere Leistungen
-            </button>
-          </div>
+          <button className="btn-primary" onClick={() => go('kontakt')}>
+            Kostenloses Erstgespräch →
+          </button>
 
-          <div className={s.stats}>
-            <div className={s.stat}>
-              <span className={s.statN}>100%</span>
-              <span className={s.statL}>DSGVO-konform</span>
-            </div>
-            <div className={s.statD} />
-            <div className={s.stat}>
-              <span className={s.statN}>DACH</span>
-              <span className={s.statL}>Heimatmarkt</span>
-            </div>
-            <div className={s.statD} />
-            <div className={s.stat}>
-              <span className={s.statN}>3-in-1</span>
-              <span className={s.statL}>Web · Auto · KI</span>
-            </div>
+          <div className={s.statsInline}>
+            <span>100% DSGVO</span>
+            <span className={s.sDiv}>·</span>
+            <span>DACH-Region</span>
+            <span className={s.sDiv}>·</span>
+            <span>Echter IT-Hintergrund</span>
           </div>
-        </div>
-
-        <div className={s.scrollHint}>
-          <span>Scroll</span>
-          <div className={s.scrollLine} />
         </div>
       </section>
 
