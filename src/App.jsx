@@ -58,22 +58,20 @@ export default function App() {
   const svcRef    = useRef()
   const whyRef    = useRef()
 
-  /* Track scroll velocity for 3D rotation */
-  useEffect(() => {
-    const onWheel = e => { scrollVel.current += e.deltaY * 0.0009 }
-    window.addEventListener('wheel', onWheel, { passive: true })
-    return () => window.removeEventListener('wheel', onWheel)
-  }, [])
-
-  /* Lenis smooth scroll */
+  /* Lenis smooth scroll — velocity drives 3D rotation directly */
   useEffect(() => {
     let lenis
     import('lenis').then(mod => {
       const Lenis = mod.default ?? mod
-      lenis = new Lenis({ lerp: 0.09, smoothWheel: true })
+      // lerp: 0.06 = very silky scroll inertia
+      lenis = new Lenis({ lerp: 0.06, smoothWheel: true })
       const raf = t => { lenis.raf(t); requestAnimationFrame(raf) }
       requestAnimationFrame(raf)
-      lenis.on('scroll', () => ScrollTrigger.update())
+      lenis.on('scroll', ({ velocity }) => {
+        // Lenis velocity is already smoothed — use it directly for rotation
+        scrollVel.current = velocity * 0.028
+        ScrollTrigger.update()
+      })
     }).catch(() => {})
     return () => lenis?.destroy()
   }, [])
@@ -88,7 +86,7 @@ export default function App() {
         start: 'top top',
         end: '+=250%',
         pin: true,
-        scrub: 1.5,
+        scrub: 2,           // smoother lag between scroll and progress
         onUpdate: self => { sp.current = self.progress },
       })
 

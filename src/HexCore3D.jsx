@@ -208,8 +208,8 @@ function Particles() {
     return arr
   }, [])
 
-  useFrame(({ clock }) => {
-    if (ref.current) ref.current.rotation.y = clock.getElapsedTime() * 0.017
+  useFrame((_, delta) => {
+    if (ref.current) ref.current.rotation.y += delta * 0.017
   })
 
   return (
@@ -234,23 +234,28 @@ function HexScene({ sp, scrollVel }) {
     camera.lookAt(0, 0.4, 0)
   }, [camera])
 
-  useFrame(() => {
-    const t = sp.current
+  useFrame((_, delta) => {
+    const t  = sp.current
+    // Normalize delta to 60 fps so lerp feels identical at any frame rate
+    const dt = Math.min(delta, 0.05) * 60   // cap at 50ms to avoid huge jumps
 
-    // Dramatic camera zoom: pull in to 50%, then pull back to 100%
+    // ── Camera target positions ─────────────────────────
     const targetZ = t < 0.5
-      ? 7.5 - (t / 0.5) * 3.2   // 7.5 → 4.3  (zoom in — object feels MASSIVE)
-      : 4.3 + ((t - 0.5) / 0.5) * 4.7  // 4.3 → 9.0  (pull back — full explosion visible)
-    camera.position.z += (targetZ - camera.position.z) * 0.05
-
-    // Camera rises slightly as we scroll (creates an "ascent" feel)
+      ? 7.5 - (t / 0.5) * 3.2          // zoom in:  7.5 → 4.3
+      : 4.3 + ((t - 0.5) / 0.5) * 4.7  // pull back: 4.3 → 9.0
     const targetY = -0.8 + t * 1.2
-    camera.position.y += (targetY - camera.position.y) * 0.05
+
+    // Frame-rate-independent smooth lerp (alpha ≈ 0.08 at 60 fps)
+    const camA = 1 - Math.pow(0.92, dt)
+    camera.position.z += (targetZ - camera.position.z) * camA
+    camera.position.y += (targetY - camera.position.y) * camA
     camera.lookAt(0, 0.4, 0)
 
-    // Scroll-driven rotation with damping
-    idleRot.current += scrollVel.current
-    scrollVel.current *= 0.88
+    // ── Rotation — velocity already smoothed by Lenis ──
+    // Frame-rate-independent: same radians-per-second regardless of fps
+    idleRot.current += scrollVel.current * dt
+    // Smooth coast-to-stop (alpha ≈ 0.95 per frame at 60 fps → very silky)
+    scrollVel.current *= Math.pow(0.95, dt)
 
     if (!groupRef.current) return
     groupRef.current.rotation.x = t * 0.12
